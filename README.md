@@ -1,0 +1,1 @@
+This is my repository for developing a TUI CLI app for managing personal finance budgets
