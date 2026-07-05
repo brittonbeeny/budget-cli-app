@@ -1,4 +1,4 @@
-# Budget CLI
+# Budget CLI (Work in Progress)
 
 A terminal-based TUI application for managing personal personal finance budgets.
 
