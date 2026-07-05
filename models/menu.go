@@ -2,6 +2,7 @@ package models
 
 import (
 	"budget-cli/styles"
+	"budget-cli/utils"
 	"fmt"
 	"log"
 
@@ -84,7 +85,7 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "esc":
 			m.cursorPosition = 0
-			return m, backCmd()
+			return m, utils.GoBackHomeCmd()
 
 		case "enter":
 			log.Println("Menu: Enter pressed")

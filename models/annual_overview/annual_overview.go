@@ -1,7 +1,9 @@
-package models
+package annual_overview
 
 import (
+	"budget-cli/shared"
 	"budget-cli/styles"
+	"budget-cli/utils"
 	"strconv"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,7 +13,7 @@ import (
 type AnnualOverview struct {
 	leftPane  leftPane
 	rightPane rightPane
-	window    *WindowSize
+	window    *shared.WindowSize
 }
 
 type leftPane struct {
@@ -48,7 +50,7 @@ type goals struct {
 
 type backToHome bool
 
-func NewAnnualOverview(windowSize *WindowSize) AnnualOverview {
+func NewAnnualOverview(windowSize *shared.WindowSize) AnnualOverview {
 	leftPane := leftPane{
 		years: []int{2026, 2027, 2028}, //this will come from DB later based on existing budgets
 	}
@@ -92,7 +94,7 @@ func (m AnnualOverview) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "esc":
 			m.leftPane.cursor = 0
-			return m, backCmd()
+			return m, utils.GoBackHomeCmd()
 		}
 	}
 

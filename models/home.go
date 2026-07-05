@@ -1,8 +1,10 @@
 package models
 
 import (
+	"budget-cli/models/annual_overview"
+	"budget-cli/shared"
 	"budget-cli/styles"
-
+	"budget-cli/utils"
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,10 +21,10 @@ const bannerContent = `
 `
 
 type HomeModel struct {
-	window       *WindowSize
+	window       *shared.WindowSize
 	Banner       Banner
 	menu         MenuModel
-	overview     AnnualOverview
+	overview     annual_overview.AnnualOverview
 	gotoMenu     bool
 	gotoOverview bool
 }
@@ -32,7 +34,7 @@ type Banner struct {
 	style   lipgloss.Style
 }
 
-func NewHomeModel(windowSize *WindowSize) HomeModel {
+func NewHomeModel(windowSize *shared.WindowSize) HomeModel {
 	banner := Banner{
 		content: bannerContent,
 		style:   styles.BaseStyle,
@@ -41,11 +43,11 @@ func NewHomeModel(windowSize *WindowSize) HomeModel {
 	return HomeModel{
 		window:   windowSize,
 		Banner:   banner,
-		overview: NewAnnualOverview(windowSize),
+		overview: annual_overview.NewAnnualOverview(windowSize),
 	}
 }
 
-func (m HomeModel) WindowSize() *WindowSize {
+func (m HomeModel) WindowSize() *shared.WindowSize {
 	return m.window
 }
 
@@ -71,12 +73,12 @@ func (m HomeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	}
-	if _, ok := msg.(backToHome); ok {
+	if _, ok := msg.(utils.BackToHome); ok {
 		m.gotoOverview = false
 		return m, nil
 	} else if m.gotoOverview { //Pass down to Menu
 		overviewModel, overviewCmd := m.overview.Update(msg)
-		m.overview = overviewModel.(AnnualOverview)
+		m.overview = overviewModel.(annual_overview.AnnualOverview)
 		return m, overviewCmd
 	}
 	return m, nil

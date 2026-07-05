@@ -1,6 +1,7 @@
 package models
 
 import (
+	"budget-cli/shared"
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,10 +15,7 @@ const (
 	quit
 )
 
-type WindowSize struct {
-	Height int
-	Width  int
-}
+type WindowSize = shared.WindowSize
 
 type RootModel struct {
 	state   sessionState
