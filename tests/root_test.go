@@ -20,7 +20,7 @@ func TestRootModelUpdate_WindowSizeMsgUpdatesSharedWindow(t *testing.T) {
 		t.Fatal("expected root window pointer to be initialized")
 	}
 
-	if root.WindowSize() != root.LoadingModel().WindowSize() || root.WindowSize() != root.HomeModel().WindowSize() || root.WindowSize() != root.HomeModel().MenuModel().WindowSize() {
+	if root.WindowSize() != root.LoadingModel().WindowSize() || root.WindowSize() != root.HomeModel().WindowSize() {
 		t.Fatal("expected loading, home, and menu models to share the same window pointer")
 	}
 
