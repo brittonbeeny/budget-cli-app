@@ -55,9 +55,7 @@ func (m LoadingModel) Init() tea.Cmd {
 }
 
 func (m LoadingModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	switch msg := msg.(type) {
-
 	case doneLoading:
 		m.loading = false
 		return m, nil

@@ -9,6 +9,14 @@ import (
 )
 
 func main() {
+
+	f, err := tea.LogToFile("debug.log", "debug")
+	if err != nil {
+		fmt.Printf("Fatal error setting up logging: %v", err)
+		os.Exit(1)
+	}
+	defer f.Close()
+
 	p := tea.NewProgram(models.NewRootModel(), tea.WithAltScreen()) //needs an initial model
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error occurred while running budget-cli")

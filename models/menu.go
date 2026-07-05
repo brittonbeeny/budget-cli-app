@@ -3,16 +3,27 @@ package models
 import (
 	"budget-cli/styles"
 	"fmt"
+	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
+type menuState int
+
+const (
+	menuView menuState = iota
+	createView
+)
+
 type MenuModel struct {
+	state          menuState
 	window         *WindowSize
 	cursorPosition int
 	choices        []choice
 	style          lipgloss.Style
+	createBudget   CreateBudgetModel
+	menuShown      bool
 }
 
 type choice struct {
@@ -28,9 +39,12 @@ func NewMenuModel(windowSize *WindowSize) MenuModel {
 		{"View Budgets"},
 	}
 	return MenuModel{
-		window:  windowSize,
-		choices: menuChoices,
-		style:   styles.BaseStyle,
+		state:        menuView,
+		window:       windowSize,
+		choices:      menuChoices,
+		style:        styles.BaseStyle,
+		createBudget: NewCreateBudgetModel(),
+		menuShown:    false,
 	}
 }
 
@@ -47,8 +61,17 @@ func (m MenuModel) Init() tea.Cmd {
 }
 
 func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
+	log.Printf("Menu: Incoming msg type=%T, Current State=%v", msg, m.state)
 
+	if m.state == createView {
+		log.Println("Menu: Routing directly to CreateBudget")
+		var createCmd tea.Cmd
+		cbm, createCmd := m.createBudget.Update(msg)
+		m.createBudget = cbm.(CreateBudgetModel)
+		return m, createCmd
+	}
+
+	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "up", "k":
@@ -62,13 +85,38 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			m.cursorPosition = 0
 			return m, backCmd()
-		}
 
+		case "enter":
+			log.Println("Menu: Enter pressed")
+
+			switch m.cursorPosition {
+			case 0:
+				log.Println("Menu: Selected first option (Create Budget)")
+				m.state = createView
+				return m, nil
+
+			case 1:
+				log.Println("Menu: Selected second option")
+			}
+		}
 	}
+
 	return m, nil
 }
 
 func (m MenuModel) View() string {
+	switch m.state {
+	case createView:
+		return m.createBudget.View()
+	default:
+		return m.getMenuView()
+	}
+
+}
+
+func (m *MenuModel) getMenuView() string {
+
+	m.menuShown = true
 	content := "What would you like to do?\n\n"
 
 	lines := []string{content}

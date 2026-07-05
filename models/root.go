@@ -1,6 +1,8 @@
 package models
 
 import (
+	"log"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -9,7 +11,7 @@ type sessionState int
 const (
 	loadingView sessionState = iota
 	homeView
-	menuView
+	quit
 )
 
 type WindowSize struct {
@@ -54,16 +56,17 @@ func (m RootModel) Init() tea.Cmd {
 
 func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		m.window.Width = msg.Width
-		m.window.Height = msg.Height
-		return m, nil
-
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q": //Global Quit
+			log.Println("Quit detected")
+			m.state = quit
 			return m, tea.Quit
 		}
+	case tea.WindowSizeMsg:
+		m.window.Width = msg.Width
+		m.window.Height = msg.Height
+
 	}
 
 	switch m.state {
@@ -91,7 +94,9 @@ func (m RootModel) View() string {
 	switch m.state {
 	case loadingView:
 		return m.loading.View()
-	default:
+	case homeView:
 		return m.home.View()
+	default:
+		return ""
 	}
 }

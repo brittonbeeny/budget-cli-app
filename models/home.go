@@ -3,6 +3,8 @@ package models
 import (
 	"budget-cli/styles"
 
+	"log"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -59,16 +61,18 @@ func (m HomeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "enter":
-			m.gotoMenu = true
-			menuModel, menuCmd := m.menu.Update(msg)
-			m.menu = menuModel.(MenuModel)
-			return m, menuCmd
+			log.Println("Home: pressed Enter")
+			if !m.gotoMenu {
+				log.Println("Home: pressed Enter to transition to Menu")
+				m.gotoMenu = true
+				return m, nil
+			}
 		}
 	}
 	if _, ok := msg.(backToHome); ok {
 		m.gotoMenu = false
 		return m, nil
-	} else if m.gotoMenu {
+	} else if m.gotoMenu { //Pass down to Menu
 		menuModel, menuCmd := m.menu.Update(msg)
 		m.menu = menuModel.(MenuModel)
 		return m, menuCmd
