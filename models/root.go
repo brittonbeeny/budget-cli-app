@@ -66,7 +66,6 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.window.Width = msg.Width
 		m.window.Height = msg.Height
-
 	}
 
 	switch m.state {
@@ -91,12 +90,15 @@ func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m RootModel) View() string {
+	//footer := styles.FooterStyle.Render("Press CTRL+C,q to quit")
 	switch m.state {
 	case loadingView:
 		return m.loading.View()
 	case homeView:
+		// return lipgloss.JoinVertical(lipgloss.Bottom, m.home.View(), footer)
 		return m.home.View()
-	default:
-		return ""
 	}
+
+	return ""
+
 }

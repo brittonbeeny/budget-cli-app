@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	BaseColor             = lipgloss.Color("40")
+	BaseColor             = lipgloss.Color("#3365A1")
 	BaseStyle             = lipgloss.NewStyle().Foreground(BaseColor).Align(lipgloss.Center, lipgloss.Center)
 	activeChoicePadding   = 1
 	inactiveChoicePadding = activeChoicePadding + 1
@@ -18,4 +18,6 @@ var (
 	InactiveChoiceStyle = lipgloss.NewStyle().
 		// PaddingTop and PaddingBottom compensate for the missing top/bottom borders
 		Padding(inactiveChoicePadding)
+
+	FooterStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(BaseColor)).AlignVertical(lipgloss.Bottom)
 )

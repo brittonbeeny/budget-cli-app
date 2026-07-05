@@ -19,10 +19,12 @@ const bannerContent = `
 `
 
 type HomeModel struct {
-	window   *WindowSize
-	Banner   Banner
-	menu     MenuModel
-	gotoMenu bool
+	window       *WindowSize
+	Banner       Banner
+	menu         MenuModel
+	overview     AnnualOverview
+	gotoMenu     bool
+	gotoOverview bool
 }
 
 type Banner struct {
@@ -37,9 +39,9 @@ func NewHomeModel(windowSize *WindowSize) HomeModel {
 	}
 
 	return HomeModel{
-		window: windowSize,
-		Banner: banner,
-		menu:   NewMenuModel(windowSize),
+		window:   windowSize,
+		Banner:   banner,
+		overview: NewAnnualOverview(windowSize),
 	}
 }
 
@@ -62,30 +64,30 @@ func (m HomeModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "enter":
 			log.Println("Home: pressed Enter")
-			if !m.gotoMenu {
+			if !m.gotoOverview {
 				log.Println("Home: pressed Enter to transition to Menu")
-				m.gotoMenu = true
+				m.gotoOverview = true
 				return m, nil
 			}
 		}
 	}
 	if _, ok := msg.(backToHome); ok {
-		m.gotoMenu = false
+		m.gotoOverview = false
 		return m, nil
-	} else if m.gotoMenu { //Pass down to Menu
-		menuModel, menuCmd := m.menu.Update(msg)
-		m.menu = menuModel.(MenuModel)
-		return m, menuCmd
+	} else if m.gotoOverview { //Pass down to Menu
+		overviewModel, overviewCmd := m.overview.Update(msg)
+		m.overview = overviewModel.(AnnualOverview)
+		return m, overviewCmd
 	}
 	return m, nil
 }
 
 func (m HomeModel) View() string {
-	if m.gotoMenu {
-		return m.menu.View()
+	if m.gotoOverview {
+		return m.overview.View()
 	}
 
-	content := "\n\nPress Enter to continue\n\nPress CTRL+C, q to Quit"
+	content := "\n\nPress Enter to continue\n\n"
 
 	bannerStyle := m.Banner.style
 	if m.window != nil {

@@ -30,7 +30,7 @@ type choice struct {
 	text string
 }
 
-type backToHome bool
+//type backToHome bool
 
 func NewMenuModel(windowSize *WindowSize) MenuModel {
 
@@ -138,8 +138,8 @@ func (m *MenuModel) getMenuView() string {
 		Render(lipgloss.JoinVertical(lipgloss.Center, lines...))
 }
 
-func backCmd() tea.Cmd {
-	return func() tea.Msg {
-		return backToHome(true)
-	}
-}
+// func backCmd() tea.Cmd {
+// 	return func() tea.Msg {
+// 		return backToHome(true)
+// 	}
+// }
