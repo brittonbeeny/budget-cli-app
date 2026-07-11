@@ -1,6 +1,7 @@
 package models
 
 import (
+	"budget-cli/models/budget"
 	"budget-cli/styles"
 	"budget-cli/utils"
 	"fmt"
@@ -23,7 +24,7 @@ type MenuModel struct {
 	cursorPosition int
 	choices        []choice
 	style          lipgloss.Style
-	createBudget   CreateBudgetModel
+	createBudget   budget.CreateBudgetModel
 	menuShown      bool
 }
 
@@ -44,7 +45,7 @@ func NewMenuModel(windowSize *WindowSize) MenuModel {
 		window:       windowSize,
 		choices:      menuChoices,
 		style:        styles.BaseStyle,
-		createBudget: NewCreateBudgetModel(),
+		createBudget: budget.NewCreateBudgetModel(),
 		menuShown:    false,
 	}
 }
@@ -68,7 +69,7 @@ func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		log.Println("Menu: Routing directly to CreateBudget")
 		var createCmd tea.Cmd
 		cbm, createCmd := m.createBudget.Update(msg)
-		m.createBudget = cbm.(CreateBudgetModel)
+		m.createBudget = cbm.(budget.CreateBudgetModel)
 		return m, createCmd
 	}
 

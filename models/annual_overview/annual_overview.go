@@ -1,6 +1,7 @@
 package annual_overview
 
 import (
+	"budget-cli/models/budget"
 	"budget-cli/shared"
 	"budget-cli/styles"
 	"budget-cli/utils"
@@ -10,10 +11,19 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+type state int
+
+const (
+	annualView state = iota
+	createView
+)
+
 type AnnualOverview struct {
-	leftPane  leftPane
-	rightPane rightPane
-	window    *shared.WindowSize
+	state          state
+	leftPane       leftPane
+	rightPane      rightPane
+	window         *shared.WindowSize
+	newBudgetModel budget.CreateBudgetModel
 }
 
 type leftPane struct {
@@ -78,9 +88,11 @@ func NewAnnualOverview(windowSize *shared.WindowSize) AnnualOverview {
 	}
 
 	return AnnualOverview{
-		leftPane:  leftPane,
-		rightPane: rightPane,
-		window:    windowSize,
+		state:          annualView,
+		leftPane:       leftPane,
+		rightPane:      rightPane,
+		window:         windowSize,
+		newBudgetModel: budget.NewCreateBudgetModel(),
 	}
 
 }
@@ -104,14 +116,31 @@ func (m AnnualOverview) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "esc":
 			m.leftPane.cursor = 0
-			return m, utils.GoBackHomeCmd()
+			if m.state != createView {
+				return m, utils.GoBackHomeCmd()
+			}
+			model, cmd := m.newBudgetModel.Update(msg)
+			m.newBudgetModel = model.(budget.CreateBudgetModel)
+			return m, cmd
+
+		case "c":
+			m.state = createView
+			return m, nil
 		}
+	}
+
+	if _, ok := msg.(utils.BackToAnnual); ok {
+		m.state = annualView
 	}
 
 	return m, nil
 }
 
 func (m AnnualOverview) View() string {
+
+	if m.state == createView {
+		return m.newBudgetModel.View()
+	}
 
 	leftWidth := (m.window.Width / 4) - 2
 	rightWidth := (3 * m.window.Width / 4) - 1

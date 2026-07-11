@@ -1,6 +1,7 @@
-package models
+package budget
 
 import (
+	"budget-cli/utils"
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,6 +20,17 @@ func (m CreateBudgetModel) Init() tea.Cmd {
 }
 
 func (m CreateBudgetModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+	switch msg := msg.(type) {
+
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "esc":
+			return m, utils.GoBackToAnnualCmd()
+		}
+
+	}
+
 	return m, nil
 }
 

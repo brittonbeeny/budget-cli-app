@@ -49,6 +49,21 @@ func TestAnnualOverviewLeftPaneMultiCursorUpdate(t *testing.T) {
 	}
 }
 
+func TestAnnualOverviewToCreateNewBudgetUpdate(t *testing.T) {
+
+	annualOverview := initiateModel().(AnnualOverview)
+
+	createPress := tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'c'}}
+	updatedModel, _ := sendTeaMsg(annualOverview, createPress)
+
+	annualOverview = updatedModel.(AnnualOverview)
+
+	if annualOverview.state != createView {
+		t.Fail()
+	}
+
+}
+
 func initiateModel() tea.Model {
 	annualOverview := NewAnnualOverview(&shared.WindowSize{Width: 80, Height: 80})
 	annualOverview.leftPane.years = []int{2026, 2027}
