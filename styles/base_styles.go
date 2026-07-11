@@ -19,5 +19,5 @@ var (
 		// PaddingTop and PaddingBottom compensate for the missing top/bottom borders
 		Padding(inactiveChoicePadding)
 
-	FooterStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(BaseColor)).AlignVertical(lipgloss.Bottom)
+	FooterStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#616570")).AlignVertical(lipgloss.Bottom)
 )

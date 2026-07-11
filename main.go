@@ -1,6 +1,7 @@
 package main
 
 import (
+	"budget-cli/db"
 	"budget-cli/models"
 	"fmt"
 	"os"
@@ -16,6 +17,10 @@ func main() {
 		os.Exit(1)
 	}
 	defer f.Close()
+
+	if dbLoadErr := db.InitDB(); dbLoadErr != nil {
+		fmt.Printf("Error occured: %v", err)
+	}
 
 	p := tea.NewProgram(models.NewRootModel(), tea.WithAltScreen()) //needs an initial model
 	if _, err := p.Run(); err != nil {

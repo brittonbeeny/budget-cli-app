@@ -20,6 +20,12 @@ type leftPane struct {
 	cursor int
 	years  []int
 	style  lipgloss.Style
+	footer footer
+}
+
+type footer struct {
+	text  string
+	style lipgloss.Style
 }
 
 type rightPane struct {
@@ -52,7 +58,11 @@ type backToHome bool
 
 func NewAnnualOverview(windowSize *shared.WindowSize) AnnualOverview {
 	leftPane := leftPane{
-		years: []int{2026, 2027, 2028}, //this will come from DB later based on existing budgets
+		years: []int{}, //this will come from DB later based on existing budgets
+		footer: footer{
+			text:  "Press 'c' to create a new budget",
+			style: styles.FooterStyle,
+		},
 	}
 
 	income := income{}
@@ -126,15 +136,39 @@ func (lp leftPane) getLeftPaneView(width, height int) string {
 		lines = append(lines, line)
 	}
 
+	// Compute filler lines so the footer sits at the bottom of the pane.
+	// Subtract a small number to account for the border padding — if the
+	// pane is too small, fall back to zero filler.
+	fillerCount := height - len(lines) - 2
+	if fillerCount < 0 {
+		fillerCount = 0
+	}
+	filler := make([]string, fillerCount)
+	for i := range filler {
+		filler[i] = ""
+	}
+
+	contentLines := append(lines, filler...)
+	contentLines = append(contentLines, lp.footer.getFooter())
+
+	content := lipgloss.NewStyle().Render(lipgloss.JoinVertical(lipgloss.Left, contentLines...))
+
 	return lp.style.
 		Border(lipgloss.NormalBorder()).
 		Width(width).
-		Height(height).
-		Render(lipgloss.JoinVertical(lipgloss.Left, lines...))
+		Height(height).Render(content)
+
+}
+
+func (f footer) getFooter() string {
+	// if f.style != (lipgloss.Style{}) {
+	// 	return f.style.Render(f.text)
+	// }
+	return styles.FooterStyle.Render(f.text)
 }
 
 func (rp rightPane) getRightPaneView(width, height int) string {
-	content := "This is the overview pane"
+	content := ""
 
 	return rp.style.
 		Border(lipgloss.NormalBorder()).
