@@ -143,7 +143,7 @@ func (m AnnualOverview) View() string {
 	}
 
 	leftWidth := (m.window.Width / 4) - 2
-	rightWidth := (3 * m.window.Width / 4) - 1
+	rightWidth := (3 * m.window.Width / 4) - 2
 	paneHeight := m.window.Height - 2
 
 	leftPaneView := m.leftPane.getLeftPaneView(leftWidth, paneHeight)
