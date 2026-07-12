@@ -14,13 +14,10 @@ PRAGMA foreign_keys = OFF;
 
 CREATE TABLE IF NOT EXISTS budgets (
 id INTEGER PRIMARY KEY,
-period_start TEXT NOT NULL,
 year INTEGER NOT NULL,
 month INTEGER NOT NULL,
-name TEXT,
-notes TEXT,
-created_at TEXT DEFAULT (datetime('now')),
-UNIQUE(period_start),
+created_at DATETIME,
+UNIQUE(month,year),
 CHECK(month BETWEEN 1 AND 12)
 );
 
@@ -30,7 +27,8 @@ name TEXT NOT NULL,
 kind TEXT NOT NULL,
 parent_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
 notes TEXT,
-created_at TEXT DEFAULT (datetime('now')),
+created_at DATETIME NOT NULL,
+updated_at DATETIME,
 UNIQUE(name, kind),
 CHECK(kind IN ('income','expense'))
 );
@@ -40,8 +38,9 @@ id INTEGER PRIMARY KEY,
 budget_id INTEGER NOT NULL REFERENCES budgets(id) ON DELETE CASCADE,
 category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
 planned_amount_cents INTEGER NOT NULL,
-notes TEXT,
-created_at TEXT DEFAULT (datetime('now')),
+name TEXT,
+created_at DATETIME NOT NULL,
+updated_at DATETIME,
 UNIQUE(budget_id, category_id)
 );
 
